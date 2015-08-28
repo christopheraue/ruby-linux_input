@@ -34,6 +34,22 @@ LinuxInput::FfEffect     # ff_effect struct
 # and so on ...
 ```
 
+Constant names are left untouched:
+
+```ruby
+LinuxInput::EV_KEY     # => 0x01 (key event bit)
+LinuxInput::KEY_A      # => 30 (key code of the a key)
+# and so on ...
+```
+
+Ioctl constants and macros:
+
+```ruby
+LinuxInput::EVIOCGID
+LinuxInput::EVIOCGNAME(len)
+# and so on ...
+```
+
 Mapping a received event to the input_event struct:
 
 ```ruby
@@ -48,22 +64,6 @@ loop do
     puts event[:code]
     puts event[:value]
 end
-```
-
-Constant names are left untouched:
-
-```ruby
-LinuxInput::EV_KEY     # => 0x01 (key event bit)
-LinuxInput::KEY_A      # => 30 (key code of the a key)
-# and so on ...
-``
-
-Ioctl constants and macros:
-
-```ruby
-LinuxInput::EVIOCGID
-LinuxInput::EVIOCGNAME(len)
-# and so on ...
 ```
 
 ## (Re-)Compiling the interface on a linux machine
