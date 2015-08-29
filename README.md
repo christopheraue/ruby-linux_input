@@ -2,6 +2,9 @@
 
 FFI structs and constants for linux's input subsystem found in linux/input.h
 
+Have a look at the [Libevdev](https://github.com/christopheraue/ruby-libevdev)
+gem for an easier to use interface to the input subsystem.
+
 ## Installation
 
 Add this line to your application's Gemfile:
