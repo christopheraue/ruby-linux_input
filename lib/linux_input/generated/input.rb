@@ -1,40 +1,3 @@
-  class InputEvent < FFI::Struct
-    layout(
-           :time, Timeval,
-           :type, :ushort,
-           :code, :ushort,
-           :value, :int
-    )
-  end
-  EV_VERSION = 0x010001
-  class InputId < FFI::Struct
-    layout(
-           :bustype, :ushort,
-           :vendor, :ushort,
-           :product, :ushort,
-           :version, :ushort
-    )
-  end
-  class InputAbsinfo < FFI::Struct
-    layout(
-           :value, :int,
-           :minimum, :int,
-           :maximum, :int,
-           :fuzz, :int,
-           :flat, :int,
-           :resolution, :int
-    )
-  end
-  INPUT_KEYMAP_BY_INDEX = (1 << 0)
-  class InputKeymapEntry < FFI::Struct
-    layout(
-           :flags, :uchar,
-           :len, :uchar,
-           :index, :ushort,
-           :keycode, :uint,
-           :scancode, [:uchar, 32]
-    )
-  end
   INPUT_PROP_POINTER = 0x00
   INPUT_PROP_DIRECT = 0x01
   INPUT_PROP_BUTTONPAD = 0x02
@@ -218,6 +181,7 @@
   KEY_MSDOS = 151
   KEY_COFFEE = 152
   KEY_SCREENLOCK = 152
+  KEY_ROTATE_DISPLAY = 153
   KEY_DIRECTION = 153
   KEY_CYCLEWINDOWS = 154
   KEY_MAIL = 155
@@ -375,6 +339,7 @@
   BTN_TOOL_MOUSE = 0x146
   BTN_TOOL_LENS = 0x147
   BTN_TOOL_QUINTTAP = 0x148
+  BTN_STYLUS3 = 0x149
   BTN_TOUCH = 0x14a
   BTN_STYLUS = 0x14b
   BTN_STYLUS2 = 0x14c
@@ -404,9 +369,11 @@
   KEY_TITLE = 0x171
   KEY_SUBTITLE = 0x172
   KEY_ANGLE = 0x173
+  KEY_FULL_SCREEN = 0x174
   KEY_ZOOM = 0x174
   KEY_MODE = 0x175
   KEY_KEYBOARD = 0x176
+  KEY_ASPECT_RATIO = 0x177
   KEY_SCREEN = 0x177
   KEY_PC = 0x178
   KEY_TV = 0x179
@@ -523,6 +490,10 @@
   KEY_NUMERIC_9 = 0x209
   KEY_NUMERIC_STAR = 0x20a
   KEY_NUMERIC_POUND = 0x20b
+  KEY_NUMERIC_A = 0x20c
+  KEY_NUMERIC_B = 0x20d
+  KEY_NUMERIC_C = 0x20e
+  KEY_NUMERIC_D = 0x20f
   KEY_CAMERA_FOCUS = 0x210
   KEY_WPS_BUTTON = 0x211
   KEY_TOUCHPAD_TOGGLE = 0x212
@@ -543,6 +514,7 @@
   BTN_DPAD_LEFT = 0x222
   BTN_DPAD_RIGHT = 0x223
   KEY_ALS_TOGGLE = 0x230
+  KEY_ROTATE_LOCK_TOGGLE = 0x231
   KEY_BUTTONCONFIG = 0x240
   KEY_TASKMANAGER = 0x241
   KEY_JOURNAL = 0x242
@@ -550,6 +522,8 @@
   KEY_APPSELECT = 0x244
   KEY_SCREENSAVER = 0x245
   KEY_VOICECOMMAND = 0x246
+  KEY_ASSISTANT = 0x247
+  KEY_KBD_LAYOUT_NEXT = 0x248
   KEY_BRIGHTNESS_MIN = 0x250
   KEY_BRIGHTNESS_MAX = 0x251
   KEY_KBDINPUTASSIST_PREV = 0x260
@@ -558,6 +532,25 @@
   KEY_KBDINPUTASSIST_NEXTGROUP = 0x263
   KEY_KBDINPUTASSIST_ACCEPT = 0x264
   KEY_KBDINPUTASSIST_CANCEL = 0x265
+  KEY_RIGHT_UP = 0x266
+  KEY_RIGHT_DOWN = 0x267
+  KEY_LEFT_UP = 0x268
+  KEY_LEFT_DOWN = 0x269
+  KEY_ROOT_MENU = 0x26a
+  KEY_MEDIA_TOP_MENU = 0x26b
+  KEY_NUMERIC_11 = 0x26c
+  KEY_NUMERIC_12 = 0x26d
+  KEY_AUDIO_DESC = 0x26e
+  KEY_3D_MODE = 0x26f
+  KEY_NEXT_FAVORITE = 0x270
+  KEY_STOP_RECORD = 0x271
+  KEY_PAUSE_RECORD = 0x272
+  KEY_VOD = 0x273
+  KEY_UNMUTE = 0x274
+  KEY_FASTREVERSE = 0x275
+  KEY_SLOWREVERSE = 0x276
+  KEY_DATA = 0x277
+  KEY_ONSCREEN_KEYBOARD = 0x278
   BTN_TRIGGER_HAPPY = 0x2c0
   BTN_TRIGGER_HAPPY1 = 0x2c0
   BTN_TRIGGER_HAPPY2 = 0x2c1
@@ -612,6 +605,9 @@
   REL_DIAL = 0x07
   REL_WHEEL = 0x08
   REL_MISC = 0x09
+  REL_RESERVED = 0x0a
+  REL_WHEEL_HI_RES = 0x0b
+  REL_HWHEEL_HI_RES = 0x0c
   REL_MAX = 0x0f
   REL_CNT = (0x0f+1)
   ABS_X = 0x00
@@ -640,6 +636,7 @@
   ABS_TOOL_WIDTH = 0x1c
   ABS_VOLUME = 0x20
   ABS_MISC = 0x28
+  ABS_RESERVED = 0x2e
   ABS_MT_SLOT = 0x2f
   ABS_MT_TOUCH_MAJOR = 0x30
   ABS_MT_TOUCH_MINOR = 0x31
@@ -673,6 +670,7 @@
   SW_ROTATE_LOCK = 0x0c
   SW_LINEIN_INSERT = 0x0d
   SW_MUTE_DEVICE = 0x0e
+  SW_PEN_INSERTED = 0x0f
   SW_MAX = 0x0f
   SW_CNT = (0x0f+1)
   MSC_SERIAL = 0x00
@@ -705,6 +703,50 @@
   SND_TONE = 0x02
   SND_MAX = 0x07
   SND_CNT = (0x07+1)
+  class InputEvent < FFI::Struct
+    layout(
+           :time, Timeval,
+           :type, :ushort,
+           :code, :ushort,
+           :value, :int
+    )
+  end
+  EV_VERSION = 0x010001
+  class InputId < FFI::Struct
+    layout(
+           :bustype, :ushort,
+           :vendor, :ushort,
+           :product, :ushort,
+           :version, :ushort
+    )
+  end
+  class InputAbsinfo < FFI::Struct
+    layout(
+           :value, :int,
+           :minimum, :int,
+           :maximum, :int,
+           :fuzz, :int,
+           :flat, :int,
+           :resolution, :int
+    )
+  end
+  INPUT_KEYMAP_BY_INDEX = (1 << 0)
+  class InputKeymapEntry < FFI::Struct
+    layout(
+           :flags, :uchar,
+           :len, :uchar,
+           :index, :ushort,
+           :keycode, :uint,
+           :scancode, [:uchar, 32]
+    )
+  end
+  class InputMask < FFI::Struct
+    layout(
+           :type, :uint,
+           :codes_size, :uint,
+           :codes_ptr, :ulong_long
+    )
+  end
   ID_BUS = 0
   ID_VENDOR = 1
   ID_PRODUCT = 2
@@ -728,10 +770,14 @@
   BUS_GSC = 0x1A
   BUS_ATARI = 0x1B
   BUS_SPI = 0x1C
-  MT_TOOL_FINGER = 0
-  MT_TOOL_PEN = 1
-  MT_TOOL_PALM = 2
-  MT_TOOL_MAX = 2
+  BUS_RMI = 0x1D
+  BUS_CEC = 0x1E
+  BUS_INTEL_ISHTP = 0x1F
+  MT_TOOL_FINGER = 0x00
+  MT_TOOL_PEN = 0x01
+  MT_TOOL_PALM = 0x02
+  MT_TOOL_DIAL = 0x0a
+  MT_TOOL_MAX = 0x0f
   FF_STATUS_STOPPED = 0x00
   FF_STATUS_PLAYING = 0x01
   FF_STATUS_MAX = 0x01
@@ -798,11 +844,11 @@
   end
   class FfEffectU < FFI::Union
     layout(
-      :constant, FfConstantEffect,
-      :ramp, FfRampEffect,
-      :periodic, FfPeriodicEffect,
-      :condition, [FfConditionEffect, 2],
-      :rumble, FfRumbleEffect
+           :constant, FfConstantEffect,
+           :ramp, FfRampEffect,
+           :periodic, FfPeriodicEffect,
+           :condition, [FfConditionEffect, 2],
+           :rumble, FfRumbleEffect
     )
   end
   class FfEffect < FFI::Struct
@@ -835,5 +881,6 @@
   FF_WAVEFORM_MAX = 0x5d
   FF_GAIN = 0x60
   FF_AUTOCENTER = 0x61
+  FF_MAX_EFFECTS = 0x60
   FF_MAX = 0x7f
   FF_CNT = (0x7f+1)

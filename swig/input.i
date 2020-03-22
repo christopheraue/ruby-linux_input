@@ -17,4 +17,5 @@ typedef long long __s64;
 typedef unsigned long long __u64;
 #endif
 
+%include "linux/input-event-codes.h"
 %include "linux/input.h"
